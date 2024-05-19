@@ -1,0 +1,78 @@
+require("mason").setup()
+require("mason-lspconfig").setup {
+    ensure_installed = { "clangd", "cmake" },
+}
+
+local my_on_attach = function(_,bufnr)
+  vim.keymap.set('n', '<leader>rn',vim.lsp.buf.rename, {})
+  vim.keymap.set('n', '<leader>ca',vim.lsp.buf.code_action,{})
+
+  vim.keymap.set('n', 'gd',vim.lsp.buf.definition, {})
+  vim.keymap.set('n', 'gi',vim.lsp.buf.implementation, {})
+  vim.keymap.set('n', 'gr',require('telescope.builtin').lsp_references,{})
+  vim.keymap.set('n', 'K',vim.lsp.buf.hover,{})
+end
+
+require("lspconfig").clangd.setup{
+  on_attach = my_on_attach
+}
+
+
+
+local cmp = require("cmp")
+
+cmp.setup({
+  -- 指定 snippet 引擎
+  snippet = {
+    expand = function(args)
+      -- For `vsnip` users.
+      vim.fn["vsnip#anonymous"](args.body)
+
+      -- For `luasnip` users.
+      -- require('luasnip').lsp_expand(args.body)
+
+      -- For `ultisnips` users.
+      -- vim.fn["UltiSnips#Anon"](args.body)
+
+      -- For `snippy` users.
+      -- require'snippy'.expand_snippet(args.body)
+    end,
+  },
+  -- 补全源
+  sources = cmp.config.sources({
+    { name = "nvim_lsp" },
+    -- For vsnip users.
+    { name = "vsnip" },
+
+    -- For luasnip users.
+    -- { name = 'luasnip' },
+
+    --For ultisnips users.
+    -- { name = 'ultisnips' },
+
+    -- -- For snippy users.
+    -- { name = 'snippy' },
+  }, { { name = "buffer" }, { name = "path" } }),
+
+  -- 快捷键设置
+  mapping = require("keybindings").cmp(cmp),
+})
+
+-- / 查找模式使用 buffer 源
+cmp.setup.cmdline("/", {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = "buffer" },
+  },
+})
+
+-- : 命令行模式中使用 path 和 cmdline 源.
+cmp.setup.cmdline(":", {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = "path" },
+  }, {
+    { name = "cmdline" },
+  }),
+})
+
