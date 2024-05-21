@@ -77,6 +77,7 @@ packer.startup(function(use)
         "neovim/nvim-lspconfig",
         tag = "v0.1.7"
     }
+
     -- 补全引擎
     use("hrsh7th/nvim-cmp")
     -- snippet 引擎
@@ -90,4 +91,22 @@ packer.startup(function(use)
 
     -- 常见编程语言代码段
     use("rafamadriz/friendly-snippets")
+
+    -- 代码注释插件
+    use {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup()
+        end
+    }
+
+    use {
+        "mfussenegger/nvim-lint"
+    }
+
+    -- 终端插件
+    use {
+        "akinsho/toggleterm.nvim",
+        tag = "v2.11.0"
+    }
 end)

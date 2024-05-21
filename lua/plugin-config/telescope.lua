@@ -1,22 +1,3 @@
-local root_dir = vim.fn.getcwd()
-package.path = package.path .. ";" .. root_dir .. "/.neovim/?.lua"
-
-local function read_ignore_file()
-    local root_dir = vim.fn.getcwd()
-
-    local ok, gns = pcall(require, "settings")
-    if not ok then
-        return {}  
-    end
-
-    local ignored_directories = gns.telescope_file_ignore_patterns()
-    local ignore_patterns = gns.telescope_file_ignore_patterns()
-    if type(ignored_directories) == "table" and next(ignored_directories) ~=nil then
-        return ignored_directories
-    end
-    return {}
-end
-
 local status, telescope = pcall(require, "telescope")
 if not status then
   vim.notify("没有找到 telescope")
@@ -29,7 +10,7 @@ telescope.setup({
         initial_mode = "insert",
         -- 窗口内快捷键
         -- mappings = require("keybindings").telescopeList,
-        file_ignore_patterns = read_ignore_file()
+        file_ignore_patterns = gns.telescope.file_ignore_patterns
     },
     pickers = {
     -- 内置 pickers 配置
